@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bible Viewer with Bottom Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Bible text container */
+        #bible-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .verse {
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        /* Fixed search container at bottom */
+        #search-container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            border-top: 2px solid #ccc;
+        }
+
+        #search-results {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .search-result {
+            cursor: pointer;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .search-result:hover {
+            background-color: #f0f0f0;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+        #search-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="padding: 20px;">Bible Viewer</h1>
+    <div id="bible-container"></div>
+
+    <!-- Fixed Search Tool at Bottom -->
+    <div id="search-container">
+        <h2>Search</h2>
+        <input type="text" id="search-box" placeholder="Search for a word..." />
+        <button id="search-button">Search</button>
+        <div id="search-results"></div>
+    </div>
+	
+    <script>
+        // Bible text array (example lines)
+        const bibleText = [
+            "In the beginning God created the heaven and the earth.",
+            "And the earth was without form, and void; and darkness was upon the face of the deep.",
+            "And the Spirit of God moved upon the face of the waters.",
+            "And God said, Let there be light: and there was light.",
+            "And God saw the light, that it was good: and God divided the light from the darkness.",
+            "And God called the light Day, and the darkness he called Night.",
+            "And the evening and the morning were the first day.",
+            "And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.",
+            "And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.",
+            "And God called the firmament Heaven. And the evening and the morning were the second day.",
+			"In the beginning God created the heaven and the earth.",
+            "And the earth was without form, and void; and darkness was upon the face of the deep.",
+            "And the Spirit of God moved upon the face of the waters.",
+            "And God said, Let there be light: and there was light.",
+            "And God saw the light, that it was good: and God divided the light from the darkness.",
+            "And God called the light Day, and the darkness he called Night.",
+            "And the evening and the morning were the first day.",
+            "And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.",
+            "And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.",
+            "And God called the firmament Heaven. And the evening and the morning were the second day.",
+			"In the beginning God created the heaven and the earth.",
+            "And the earth was without form, and void; and darkness was upon the face of the deep.",
+            "And the Spirit of God moved upon the face of the waters.",
+            "And God said, Let there be light: and there was light.",
+            "And God saw the light, that it was good: and God divided the light from the darkness.",
+            "And God called the light Day, and the darkness he called Night.",
+            "And the evening and the morning were the first day.",
+            "And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.",
+            "And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.",
+            "And God called the firmament Heaven. And the evening and the morning were the second day.",
+        ];
+
+        const container = document.getElementById('bible-container');
+        const searchBox = document.getElementById('search-box');
+        const searchButton = document.getElementById('search-button');
+        const searchResults = document.getElementById('search-results');
+
+        // Render the entire Bible text with unique IDs for each line
+        bibleText.forEach((line, index) => {
+            const p = document.createElement('p');
+            p.className = 'verse';
+            p.textContent = line;
+            p.id = `verse-${index}`; // Unique ID for scrolling
+            container.appendChild(p);
+        });
+
+        // Search functionality
+        function performSearch() {
+            const query = searchBox.value.trim().toLowerCase();
+            searchResults.innerHTML = ''; // Clear previous results
+
+            if (query === '') return; // Do nothing if search is empty
+
+            bibleText.forEach((line, index) => {
+                if (line.toLowerCase().includes(query)) {
+                    const result = document.createElement('div');
+                    result.className = 'search-result';
+                    result.innerHTML = highlightMatch(line, query); // Highlight matched word
+
+                    // Scroll to the verse when clicked
+                    result.addEventListener('click', () => {
+                        const verseElement = document.getElementById(`verse-${index}`);
+                        verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+
+                    searchResults.appendChild(result);
+                }
+            });
+        }
+
+        // Trigger search on button click
+        searchButton.addEventListener('click', performSearch);
+
+        // Trigger search on "Enter" key press
+        searchBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Function to highlight matched word in results
+        function highlightMatch(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+    </script>
+
+</body>
+</html>
